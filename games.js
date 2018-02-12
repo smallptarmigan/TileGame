@@ -3,6 +3,9 @@ function menu() {
     mode = 0;
     inittile(3);
     writetile();
+    if($.cookie('highscore') == undefined){
+	$.cookie( 'highscore', 0 );
+    }
 }
 
 /* drawing success */
@@ -87,6 +90,7 @@ function checktile (){
 
 /* onclock function */
 function onClick(e) {
+    var highscorehtml = document.getElementById("highscore");
     var scorehtml = document.getElementById("score");
     var remainhtml = document.getElementById("remain");    
     if(mode == 0){
@@ -119,13 +123,16 @@ function onClick(e) {
 	if(remain < 0){
 	    mode = 0;
 	    /* cookie */
-	    
+	    if($.cookie('highscore') < score){
+		$.cookie('highscore', score, { expires: 30 });
+	    }
 	}
     }
     else if(mode == 2){
 	mode = 1;
 	inittile(tilelen);
     }
+    highscorehtml.innerHTML = "highscore : " + $.cookie('highscore');
     scorehtml.innerHTML = "score : " + score;
     remainhtml.innerHTML = "remain : " + remain;
 }

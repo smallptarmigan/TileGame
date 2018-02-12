@@ -1,4 +1,4 @@
-# tile game
+# Tile game
 
 This is web game.
 All tile change one color.
