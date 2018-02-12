@@ -2,46 +2,7 @@
 html, body {
     margin: 0;
     pading: 0;
-    height: 100%;
-    width: 100%;
-}
-
-/* header_config */
-#header-bk{
-    width: 100%;
-    height: 120px;
-    
-	      
-}
-
-#header{
-
-}
-
-/* body_config */
-#body-bk{
-
-}
-
-#body{
-
-}
-
-/* footer_config */
-#footer-bk{
-
-}
-
-#footer{
-
-}
-
-/* table_config */
-table {
-    width: 300px;
-}
-
-td {
-    text-align: left;
+    height: auto;
+    width: auto;
 }
 
