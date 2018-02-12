@@ -172,10 +172,11 @@ function onClick(e) {
 	remain--;
 	if(tilestat == true){
 	    score = score + tilelen;
+	    success();	    
 	    if(score > tilelen * 10) {
 		tilelen++;
 	    }
-	    success();	    
+
 	}
 	if(remain <= 0){
 	    mode = 0;
