@@ -3,9 +3,13 @@ function menu() {
     mode = 0;
     inittile(3);
     writetile();
-    if($.cookie('highscore') == undefined){
-	$.cookie( 'highscore', 0 );
+    if($.cookie('highscore_en') == undefined){
+	$.cookie( 'highscore_en', 0 );
     }
+    if($.cookie('highscore_eh') == undefined){
+	$.cookie( 'highscore_eh', 0 );
+    }
+    
 }
 
 /* drawing success */
@@ -50,27 +54,35 @@ function writetile (){
     }
     if(mode == 0){
 	for(var i = 0; i < tilelen; i++){
-	    var j = 1;
-	    var text;
-	    var memo;
-	    switch (i) {
-	    case 0:
-		text = "ランキングモード";
-		memo = "(next update)";
-		break;
-	    case 1:
-		text = "タイムアタックモード";
-		memo = "(next update)";
-		break;
-	    case 2:
-		text = "エフェクティブモード";
-		memo = "";
-		break;
+	    for(var j = 0; j < tilelen; j++){
+		var text;
+		var memo;
+		switch (i*10+j) {
+		case 1:
+		    text = "ランキングモード";
+		    memo = "(next update)";
+		    break;
+		case 11:
+		    text = "タイムアタックモード";
+		    memo = "(next update)";
+		    break;
+		case 21:
+		    text = "エフェクティブモード";
+		    memo = "ノーマル";
+		    break;
+		case 22:
+		    text = "エフェクティブモード";
+		    memo = "ハード";
+		    break;
+		default:
+		    text = "";
+		    memo = "";
+		}
+		ctx.fillStyle = '#ffa500';
+		ctx.font = "bold 15px 'ＭＳ Ｐゴシック'";
+		ctx.fillText(text, (tileside+tilespace)*i+20, (tileside+tilespace)*j+85);
+		ctx.fillText(memo, (tileside+tilespace)*i+20, (tileside+tilespace)*j+85+15);
 	    }
-	    ctx.fillStyle = '#ffa500';
-	    ctx.font = "bold 15px 'ＭＳ Ｐゴシック'";
-	    ctx.fillText(text, (tileside+tilespace)*i+20, (tileside+tilespace)*j+85);
-	    ctx.fillText(memo, (tileside+tilespace)*i+20, (tileside+tilespace)*j+85+15);
 	}
     }
     if(mode == 2){
@@ -98,31 +110,74 @@ function inittile (n){
     tilelen = n;
     tileside = (canvas.width-tilespace*tilelen) / tilelen;
     tile = new Array();
+    var basetile = Math.floor(Math.random() * 2);
+    turn = Math.floor(Math.random() * 2);
     for(var i = 0; i < tilelen; i++){
 	tile[i] = new Array();
 	for(var j = 0; j < tilelen; j++){
-	    tile[i][j] = 0;
+	    if(mode == 0){
+		tile[i][j] = 0;
+	    }
+	    else {
+		tile[i][j] = basetile;
+	    }
 	}
     }
     randtile();
+    turn = turn ^ 1;
     writetile();
 }
 
 /* reverse tile color */
 function reversetile (i, j){
     if(mode == 0) return;
-    tile[i][j] = tile[i][j] ^ 1;
-    if(i-1 >= 0){
-	tile[i-1][j] = tile[i-1][j] ^ 1;
+    if(turn == 0){
+	tile[i][j] = tile[i][j] ^ 1;
+	if(i-1 >= 0){
+	    tile[i-1][j] = tile[i-1][j] ^ 1;
+	}
+	if(j-1 >= 0){
+	    tile[i][j-1] = tile[i][j-1] ^ 1;
+	}
+	if(j+1 < tilelen){
+	    tile[i][j+1] = tile[i][j+1] ^ 1;
+	}
+	if(i+1 < tilelen){
+	    tile[i+1][j] = tile[i+1][j] ^ 1;
+	}
+	if(level == 1){
+	    turn = turn ^ 1;
+	}
     }
-    if(j-1 >= 0){
-	tile[i][j-1] = tile[i][j-1] ^ 1;
-    }
-    if(j+1 < tilelen){
-	tile[i][j+1] = tile[i][j+1] ^ 1;
-    }
-    if(i+1 < tilelen){
-	tile[i+1][j] = tile[i+1][j] ^ 1;
+    else if(turn == 1){
+	tile[i][j] = tile[i][j] ^ 1;
+	if(i-1 >= 0){
+	    tile[i-1][j] = tile[i-1][j] ^ 1;
+	    if(j-1 >= 0){
+		tile[i-1][j-1] = tile[i-1][j-1] ^ 1;
+	    }
+	}
+	if(j-1 >= 0){
+	    tile[i][j-1] = tile[i][j-1] ^ 1;
+	    if(i+1 < tilelen){
+		tile[i+1][j-1] = tile[i+1][j-1] ^ 1;
+	    }
+	}
+	if(j+1 < tilelen){
+	    tile[i][j+1] = tile[i][j+1] ^ 1;
+	    if(i-1 >= 0){
+		tile[i-1][j+1] = tile[i-1][j+1] ^ 1;
+	    }
+	}
+	if(i+1 < tilelen){
+	    tile[i+1][j] = tile[i+1][j] ^ 1;
+	    if(j+1 < tilelen){
+		tile[i+1][j+1] = tile[i+1][j+1] ^ 1;
+	    }
+	}
+	if(level == 1){
+	    turn = turn ^ 1;
+	}
     }
     //console.log("%d %d", i, j);
 }
@@ -144,7 +199,16 @@ function onClick(e) {
     var scorehtml = document.getElementById("score");
     var remainhtml = document.getElementById("remain");
     var twitterbutton = document.getElementById("twitter");
-    console.log("%d %d", e.offsetX, e.offsetY);
+    var tempcookie = 0;
+    
+    if(level == 0){
+	tempcookie = $.cookie('highscore_en');
+    }
+    else if(level == 1){
+	tempcookie = $.cookie('highscore_eh');
+    }
+    
+    /* console.log("%d %d", e.offsetX, e.offsetY); */
     if(mode == 0){
 	var t = tileside+tilespace;
 	/* effect mode normal */
@@ -156,13 +220,22 @@ function onClick(e) {
 	    remain = 50;
 	    inittile(3);
 	    twitterbutton.innerHTML = "";
-	    highscorehtml.innerHTML = "highscore : " + $.cookie('highscore');
+	    highscorehtml.innerHTML = "highscore : " + tempcookie;
 	    scorehtml.innerHTML = "score : " + score;
 	    remainhtml.innerHTML = "remain : " + remain;   
 	}
 	/* effect mode hard */
-	if(false){
-	    
+	if(t*2 <= e.offsetX && t*2 <= e.offsetY &&
+           e.offsetX <= t*2+tileside && e.offsetY <= t*2+tileside){
+	    mode = 1;
+	    level = 1;
+	    score = 0;
+	    remain = 50;
+	    inittile(4);
+	    twitterbutton.innerHTML = "";
+	    highscorehtml.innerHTML = "highscore : " + tempcookie;
+	    scorehtml.innerHTML = "score : " + score;
+	    remainhtml.innerHTML = "remain : " + remain;   
 	}
     }
     else if(mode == 1){
@@ -196,14 +269,21 @@ function onClick(e) {
 	if(remain <= 0){
 	    mode = 0;
 	    /* cookie */
-	    if($.cookie('highscore') < score){
-		$.cookie('highscore', score, { expires: 30 });
+	    if(level == 0){
+		if(tempcookie < score){
+		    $.cookie('highscore_en', score, { expires: 30 });
+		}
+	    }
+	    if(level == 1){
+		if(tempcookie < score){
+		    $.cookie('highscore_eh', score, { expires: 30 });
+		}
 	    }
 	    result();
 	    var twittertext = twtextout();
 	    twitterbutton.innerHTML = twittertext;	    
-	}
-	highscorehtml.innerHTML = "highscore : " + $.cookie('highscore');
+	}	
+	highscorehtml.innerHTML = "highscore : " + tempcookie;
 	scorehtml.innerHTML = "score : " + score;
 	remainhtml.innerHTML = "remain : " + remain;
     }
@@ -231,19 +311,35 @@ function onClick(e) {
 /* twitter text make */
 function twtextout() {
     var comment = "";
-    if(score > 100){
-	comment = "マジですか！？プロですわ～";
+    var selectlevel = "";
+    if(level == 0){
+	selectlevel = "[エフェクティブモード(ノーマル)]";
+	if(score > 100){
+	    comment = "マジですか！？プロですわ～";
+	}
+	else if(score > 70){
+	    comment = "なかなかいい感じ～♪";
+	}
+	else if(score > 50){
+	    comment = "もうひと頑張り！";
+	}
+	else {
+	    comment = "もういっちょ！";
+	}
     }
-    else if(score > 70){
-	comment = "なかなかいい感じ～♪";
+    if(level == 1){
+	selectlevel = "[エフェクティブモード(ハード)]";
+	if(score > 50){
+	    comment = "糞なゲームで申し訳ございません";
+	}
+	else if(score > 30){
+	    comment = "やりこんでいただき大変感謝しております…";
+	}
+	else {
+	    comment = "かなり難しいですよね…";
+	}
     }
-    else if(score > 50){
-	comment = "もうひと頑張り！";
-    }
-    else {
-	comment = "もういっちょ！";
-    }
-    var out = '<p>結果をツイート</p><iframe src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fdsmpt.info%2Fgame%2Ftile&related=twitterapi%2Ctwitter&text='+'I get score '+score+'!! '+comment+'&hashtags=タイル張り職人" width="140" height="40" title="Twitter Tweet Button" style="border: 0; overflow: hidden;"></iframe>';
+    var out = '<p>結果をツイート</p><iframe src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fdsmpt.info%2Fgame%2Ftile&related=twitterapi%2Ctwitter&text='+'I get score '+score+'!! '+selectlevel+'&hashtags=タイル張り職人" width="140" height="40" title="Twitter Tweet Button" style="border: 0; overflow: hidden;"></iframe>';
     return out;
 }
 
@@ -260,6 +356,7 @@ var reversenum;
 var mode = 0;
 var level = 0;
 var remain = 0;
+var turn = 0;
 var score = 0;
 
 /* main method */
