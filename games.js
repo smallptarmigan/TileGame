@@ -145,15 +145,19 @@ function onClick(e) {
     var remainhtml = document.getElementById("remain");    
     if(mode == 0){
 	var t = tileside+tilespace;
+	/* effect mode normal */
 	if(t*2 <= e.layerX && t*1 <= e.layerY &&
            e.layerX <= t*2+tileside && e.layerY <= t*1+tileside){
 	    mode = 1;
+	    level = 0;
 	    score = 0;
 	    remain = 50;
 	    inittile(3);
 	    highscorehtml.innerHTML = "highscore : " + $.cookie('highscore');
 	    scorehtml.innerHTML = "score : " + score;
 	}
+	/* effect mode hard */
+	
 	remainhtml.innerHTML = "remain : " + remain;	    
     }
     else if(mode == 1){
@@ -172,11 +176,17 @@ function onClick(e) {
 	remain--;
 	if(tilestat == true){
 	    score = score + tilelen;
-	    success();	    
-	    if(score > tilelen * 10) {
-		tilelen++;
+	    remain = remain + tilelen + 1;
+	    success();
+	    if(score > 21) {
+		tilelen = 4;
 	    }
-
+	    if(score > 49) {
+		tilelen = 5;
+	    }
+	    if(score > 84) {
+		tilelen = 6;
+	    }
 	}
 	if(remain <= 0){
 	    mode = 0;
@@ -211,6 +221,7 @@ var tilespace = 2;
 var tileside;
 var reversenum;
 var mode = 0;
+var level = 0;
 var remain = 0;
 var score = 0;
 
