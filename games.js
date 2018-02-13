@@ -115,6 +115,7 @@ function inittile (n){
     for(var i = 0; i < tilelen; i++){
 	tile[i] = new Array();
 	for(var j = 0; j < tilelen; j++){
+	    /* set backcolor mainmenu */
 	    if(mode == 0){
 		tile[i][j] = 0;
 	    }
@@ -124,7 +125,12 @@ function inittile (n){
 	}
     }
     randtile();
-    turn = turn ^ 1;
+    if(level == 0){
+	turn = 0;
+    }
+    else if(level == 1){
+	turn = turn ^ 1;
+    }
     writetile();
 }
 
@@ -198,6 +204,7 @@ function onClick(e) {
     var highscorehtml = document.getElementById("highscore");
     var scorehtml = document.getElementById("score");
     var remainhtml = document.getElementById("remain");
+    var turnhtml = document.getElementById("turn");
     var twitterbutton = document.getElementById("twitter");
     var tempcookie = 0;
     
@@ -222,6 +229,7 @@ function onClick(e) {
 	    twitterbutton.innerHTML = "";
 	    highscorehtml.innerHTML = "highscore : " + tempcookie;
 	    scorehtml.innerHTML = "score : " + score;
+	    turnhtml.innerHTML = "turn :" + (turn == 0 ? "4近傍" : "8近傍");
 	    remainhtml.innerHTML = "remain : " + remain;   
 	}
 	/* effect mode hard */
@@ -235,7 +243,8 @@ function onClick(e) {
 	    twitterbutton.innerHTML = "";
 	    highscorehtml.innerHTML = "highscore : " + tempcookie;
 	    scorehtml.innerHTML = "score : " + score;
-	    remainhtml.innerHTML = "remain : " + remain;   
+	    turnhtml.innerHTML = "turn :" + (turn == 0 ? "4近傍" : "8近傍");
+	    remainhtml.innerHTML = "remain : " + remain;
 	}
     }
     else if(mode == 1){
@@ -285,6 +294,7 @@ function onClick(e) {
 	}	
 	highscorehtml.innerHTML = "highscore : " + tempcookie;
 	scorehtml.innerHTML = "score : " + score;
+	turnhtml.innerHTML = "turn :" + (turn == 0 ? "4近傍" : "8近傍");
 	remainhtml.innerHTML = "remain : " + remain;
     }
     else if(mode == 2){
@@ -339,7 +349,7 @@ function twtextout() {
 	    comment = "かなり難しいですよね…";
 	}
     }
-    var out = '<p>結果をツイート</p><iframe src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fdsmpt.info%2Fgame%2Ftile&related=twitterapi%2Ctwitter&text='+'I get score '+score+'!! '+selectlevel+'&hashtags=タイル張り職人" width="140" height="40" title="Twitter Tweet Button" style="border: 0; overflow: hidden;"></iframe>';
+    var out = '<p>結果をツイート</p><iframe src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fdsmpt.info%2Fgame%2Ftile&related=twitterapi%2Ctwitter&text='+'I got score '+score+'!! '+selectlevel+'&hashtags=タイル張り職人" width="140" height="40" title="Twitter Tweet Button" style="border: 0; overflow: hidden;"></iframe>';
     return out;
 }
 

@@ -11,20 +11,28 @@
     </header>
 
     <div id="description">
-      <p>タイルを反転させタイル色を同一にしてください。色はどちらでも構いません。</p>
-      <p>ノーマルモードでは、タイルは4近傍で反転します。</p>
-      <p>ハードモードでは4近傍と8近傍が交互となります。</p>
-      <p>現在エフェクティブモード(ノーマルorハード)のみです。</p>
+      <p>[クリア方法] タイルを反転させタイル色を同一色にしてください。</p>
     </div>
-
+    
     <div id="game">
-      <canvas id="c1" width="500" height="500"></canvas>
-      <p id="twitter"></p>
       <p id="highscore"></p>
       <p id="score"></p>
+      <p id="turn"></p>
       <p id="remain"></p>
+      <canvas id="c1" width="500" height="500"></canvas>
+      <p id="twitter"></p>
     </div>
 
+    <div id="description">
+      <p>[やり方]</p>
+      <p>ノーマルモードでは、クリックしたタイルに対し自身を含む4近傍で反転します。</p>
+      <p>ハードモードでは4近傍と8近傍が交互となります。</p>
+    </div>
+
+    <div id="devstat">
+      <p>現在エフェクティブモード(ノーマルorハード)のみです。</p>
+    </div>
+  
     <hr>
     
     <footer>
@@ -37,7 +45,7 @@
     <script type="text/javascript" src="google.js?201802130144"></script>
 
     <!-- java script mainscript -->
-    <script type="text/javascript" src="games.js?201802140114"></script>
+    <script type="text/javascript" src="games.js?201802140146"></script>
     
   </body>
 </html>
