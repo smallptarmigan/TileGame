@@ -142,31 +142,36 @@ function checktile (){
 function onClick(e) {
     var highscorehtml = document.getElementById("highscore");
     var scorehtml = document.getElementById("score");
-    var remainhtml = document.getElementById("remain");    
+    var remainhtml = document.getElementById("remain");
+    var twitterbutton = document.getElementById("twitter");
+    console.log("%d %d", e.offsetX, e.offsetY);
     if(mode == 0){
 	var t = tileside+tilespace;
 	/* effect mode normal */
-	if(t*2 <= e.layerX && t*1 <= e.layerY &&
-           e.layerX <= t*2+tileside && e.layerY <= t*1+tileside){
+	if(t*2 <= e.offsetX && t*1 <= e.offsetY &&
+           e.offsetX <= t*2+tileside && e.offsetY <= t*1+tileside){
 	    mode = 1;
 	    level = 0;
 	    score = 0;
 	    remain = 50;
 	    inittile(3);
+	    twitterbutton.innerHTML = "";
 	    highscorehtml.innerHTML = "highscore : " + $.cookie('highscore');
 	    scorehtml.innerHTML = "score : " + score;
+	    remainhtml.innerHTML = "remain : " + remain;   
 	}
 	/* effect mode hard */
-	
-	remainhtml.innerHTML = "remain : " + remain;	    
+	if(false){
+	    
+	}
     }
     else if(mode == 1){
 	var rect = e.target.getBoundingClientRect();
 	for(var i = 0; i < tilelen; i++){
 	    for(var j = 0; j < tilelen; j++){
 		var t = tileside+tilespace;
-		if(t*i <= e.layerX && t*j <= e.layerY &&
-		   e.layerX <= t*i+tileside && e.layerY <= t*j+tileside){
+		if(t*i <= e.offsetX && t*j <= e.offsetY &&
+		   e.offsetX <= t*i+tileside && e.offsetY <= t*j+tileside){
 		    reversetile(i, j);
 		}
 	    }
@@ -195,6 +200,8 @@ function onClick(e) {
 		$.cookie('highscore', score, { expires: 30 });
 	    }
 	    result();
+	    var twittertext = twtextout();
+	    twitterbutton.innerHTML = twittertext;	    
 	}
 	highscorehtml.innerHTML = "highscore : " + $.cookie('highscore');
 	scorehtml.innerHTML = "score : " + score;
@@ -206,8 +213,38 @@ function onClick(e) {
     }
     else if(mode == 3){
 	mode = 0;
+	twitterbutton.innerHTML = "";	    
 	menu();
     }
+}
+
+/* twitter data frame */
+!function(d,s,id){
+    var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+    if(!d.getElementById(id)){
+	js=d.createElement(s);
+	js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
+	fjs.parentNode.insertBefore(js,fjs);
+    }
+}(document, 'script', 'twitter-wjs');
+    
+/* twitter text make */
+function twtextout() {
+    var comment = "";
+    if(score > 100){
+	comment = "マジですか！？プロですわ～";
+    }
+    else if(score > 70){
+	comment = "なかなかいい感じ～♪";
+    }
+    else if(score > 50){
+	comment = "もうひと頑張り！";
+    }
+    else {
+	comment = "もういっちょ！";
+    }
+    var out = '<p>結果をツイート</p><iframe src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fdsmpt.info%2Fgame%2Ftile&related=twitterapi%2Ctwitter&text='+'I get score '+score+'!! '+comment+'&hashtags=タイル張り職人" width="140" height="40" title="Twitter Tweet Button" style="border: 0; overflow: hidden;"></iframe>';
+    return out;
 }
 
 /* onclick method */
