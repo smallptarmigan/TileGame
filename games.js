@@ -34,10 +34,10 @@ function randtile() {
     if (mode == 0) return;
     do {
         for (var i = 0; i < tilelen * 2; i++) {
-            var x = Math.floor(Math.random() * (tilelen - 1));
-            var y = Math.floor(Math.random() * (tilelen - 1));
+            var x = Math.floor(Math.random() * (tilelen));
+            var y = Math.floor(Math.random() * (tilelen));
             reversetile(x, y);
-            console.log("level:%d x:%d y:%d",level, x, y);
+            /*console.log("level:%d x:%d y:%d",level, x, y);*/
         }
     } while (checktile() == true);
 }
@@ -278,7 +278,7 @@ function onClick(e) {
             success();
             var cmpscore = 0;
             for (var i = tilelen; i > 2; i--) {
-                cmpscore = cmpscore + i * 7;
+                cmpscore = cmpscore + i * 9;
             }
             if (score > cmpscore) {
                 tilelen++;
