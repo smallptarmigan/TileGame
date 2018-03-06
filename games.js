@@ -117,11 +117,11 @@ function writetile() {
 function inittile(n) {
     tilelen = n;
     tileside = (canvas.width - tilespace * tilelen) / tilelen;
-    tile = new Array();
+    tile = [];
     var basetile = Math.floor(Math.random() * 2);
     turn = Math.floor(Math.random() * 2);
     for (var i = 0; i < tilelen; i++) {
-        tile[i] = new Array();
+        tile[i] = [];
         for (var j = 0; j < tilelen; j++) {
             /* set backcolor mainmenu */
             if (mode == 0) {
@@ -147,47 +147,27 @@ function reversetile(i, j) {
     if (mode == 0) return;
 
     if (turn == 0) {
-        tile[i][j] = tile[i][j] ^ 1;
-        if (i - 1 >= 0) {
-            tile[i - 1][j] = tile[i - 1][j] ^ 1;
-        }
-        if (j - 1 >= 0) {
-            tile[i][j - 1] = tile[i][j - 1] ^ 1;
-        }
-        if (j + 1 < tilelen) {
-            tile[i][j + 1] = tile[i][j + 1] ^ 1;
-        }
-        if (i + 1 < tilelen) {
-            tile[i + 1][j] = tile[i + 1][j] ^ 1;
+        const dx = [0,1,0,-1,0];
+        const dy = [0,0,1,0,-1];
+        for (let k = 0; k < 5; ++k) {
+            let nx = i + dx[k];
+            let ny = j + dy[k];
+            if (0 <= nx && nx < tilelen && 0 <= ny && ny < tilelen) {
+                tile[nx][ny] = tile[nx][ny] ^ 1;
+            }
         }
         if (level == 1) {
             turn = turn ^ 1;
         }
     }
     else if (turn == 1) {
-        tile[i][j] = tile[i][j] ^ 1;
-        if (i - 1 >= 0) {
-            tile[i - 1][j] = tile[i - 1][j] ^ 1;
-            if (j - 1 >= 0) {
-                tile[i - 1][j - 1] = tile[i - 1][j - 1] ^ 1;
-            }
-        }
-        if (j - 1 >= 0) {
-            tile[i][j - 1] = tile[i][j - 1] ^ 1;
-            if (i + 1 < tilelen) {
-                tile[i + 1][j - 1] = tile[i + 1][j - 1] ^ 1;
-            }
-        }
-        if (j + 1 < tilelen) {
-            tile[i][j + 1] = tile[i][j + 1] ^ 1;
-            if (i - 1 >= 0) {
-                tile[i - 1][j + 1] = tile[i - 1][j + 1] ^ 1;
-            }
-        }
-        if (i + 1 < tilelen) {
-            tile[i + 1][j] = tile[i + 1][j] ^ 1;
-            if (j + 1 < tilelen) {
-                tile[i + 1][j + 1] = tile[i + 1][j + 1] ^ 1;
+        const dx = [0,1,0,-1,0,1,1,-1,-1];
+        const dy = [0,0,1,0,-1,1,-1,1,-1];
+        for (let k = 0; k < 9; ++k) {
+            let nx = i + dx[k];
+            let ny = j + dy[k];
+            if (0 <= nx && nx < tilelen && 0 <= ny && ny < tilelen) {
+                tile[nx][ny] = tile[nx][ny] ^ 1;
             }
         }
         if (level == 1) {
@@ -199,13 +179,7 @@ function reversetile(i, j) {
 
 /* check tile color */
 function checktile() {
-    var ans = true;
-    for (var i = 0; i < tilelen; i++) {
-        for (var j = 0; j < tilelen; j++) {
-            if (tile[0][0] != tile[i][j]) ans = false;
-        }
-    }
-    return ans;
+    return tile.every(xs => xs.every(x => x == tile[0][0]));
 }
 
 /* onclock function */
