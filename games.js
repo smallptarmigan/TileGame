@@ -132,13 +132,13 @@ function inittile(n) {
             }
         }
     }
-    randtile();
     if (level == 0) {
         turn = 0;
     }
     else if (level == 1) {
         turn = turn ^ 1;
     }
+    randtile();
     writetile();
 }
 
